@@ -8,8 +8,9 @@ services:
       - "443:443"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:Z
-      - ./data/caddy:/data
-      - ./config/caddy:/config
+      - ./data/caddy:/data:Z,U
+      - ./config/caddy:/config:Z,U
+      - ./www:/var/www/html:Z,U
     extra_hosts:
       - "host.containers.internal:host-gateway"
 
