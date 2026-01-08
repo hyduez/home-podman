@@ -6,7 +6,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./data/grafana:/var/lib/grafana:Z
+      - ./data/grafana:/var/lib/grafana:Z,U
     restart: unless-stopped
 
   prometheus:
@@ -15,7 +15,7 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - ./data/prometheus:/prometheus/data:Z
+      - ./data/prometheus:/prometheus/data:Z,U
       - ./prometheus.yml:/etc/prometheus/prometheus.yml:Z
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
@@ -29,10 +29,10 @@ services:
     ports:
       - "3100:3100"
     volumes:
-      - ./data/loki:/loki:Z
-      - ./loki-config.yaml:/etc/loki/local-config.yaml:Z
+      - ./data/loki:/loki:Z,U
+      - ./loki.yaml:/etc/loki/loki.yaml:Z
     command:
-      - '-config.file=/etc/loki/local-config.yaml'
+      - '-config.file=/etc/loki/loki.yaml'
     restart: unless-stopped
 
   node_exporter:
