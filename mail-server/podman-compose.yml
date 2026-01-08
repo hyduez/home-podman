@@ -1,0 +1,106 @@
+version: '3.9'
+services:
+  database:
+    image: mariadb:10.5
+    container_name: mailserver-database
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - ./data/db:/var/lib/mysql:Z,U
+      - ./mariadb/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
+      - "25:25"
+      - "143:143"
+      - "465:465"
+      - "587:587"
+      - "993:993"
+    networks:
+      mail-network:
+        ipv4_address: 10.89.6.10
+
+  postfix:
+    image: technicalguru/mailserver-postfix
+    container_name: mailserver-postfix
+    restart: unless-stopped
+    networks:
+      mail-network:
+        ipv4_address: 10.89.6.11
+    environment:
+      MYSQL_HOST: 10.89.6.10
+      MYSQL_DATABASE: postfix
+      MYSQL_USER: postfix
+      MYSQL_PASSWORD: ${PF_DB_PASS}
+      PF_DB_HOST: 10.89.6.10
+      PF_DB_NAME: ${PF_DB_NAME}
+      PF_DB_USER: ${PF_DB_USER}
+      PF_DB_PASS: ${PF_DB_PASS}
+      PF_SETUP_PASS: ${PF_SETUP_PASS}
+      PF_MYDOMAIN: ${PF_MYDOMAIN}
+      PF_MYHOSTNAME: ${PF_MYHOSTNAME}
+      PF_DKIM_SERVICE_NAME: 10.89.6.14
+      PF_DKIM_SERVICE_PORT: 8891
+    volumes:
+      - ./data/postfix:/var/mail
+
+  opendkim:
+    image: technicalguru/mailserver-opendkim
+    container_name: mailserver-opendkim
+    restart: unless-stopped
+    networks:
+      mail-network:
+        ipv4_address: 10.89.6.14
+    environment:
+      DKIM_DB_HOST: 10.89.6.10
+      DKIM_DB_NAME: ${DKIM_DB_NAME}
+      DKIM_DB_USER: ${DKIM_DB_USER}
+      DKIM_DB_PASS: ${DKIM_DB_PASS}
+      DKIM_SETUP_PASS: ${DKIM_SETUP_PASS}
+      DKIM_DOMAIN: ${DKIM_DOMAIN}
+    volumes:
+      - ./data/opendkim:/etc/opendkim
+
+  postfixadmin:
+    image: technicalguru/mailserver-postfixadmin
+    container_name: mailserver-postfixadmin
+    restart: unless-stopped
+    ports:
+      - "8082:80"
+    networks:
+      mail-network:
+        ipv4_address: 10.89.6.12
+    environment:
+      PFA_DB_HOST: 10.89.6.10
+      PFA_DB_USER: ${PFA_DB_USER}
+      PFA_DB_PASS: ${PFA_DB_PASS}
+      PFA_DB_NAME: ${PFA_DB_NAME}
+      PFA_SETUP_PASS: ${PFA_SETUP_PASS}
+      PFA_POSTFIX_SERVER: 10.89.6.11
+      PFA_ABUSE_EMAIL: ${PFA_ABUSE_EMAIL}
+      PFA_HOSTMASTER_EMAIL: ${PFA_HOSTMASTER_EMAIL}
+      PFA_POSTMASTER_EMAIL: ${PFA_POSTMASTER_EMAIL}
+      PFA_WEBMASTER_EMAIL: ${PFA_WEBMASTER_EMAIL}
+
+  roundcube:
+    image: technicalguru/mailserver-roundcube
+    container_name: mailserver-roundcube
+    restart: unless-stopped
+    ports:
+      - "8083:80"
+    networks:
+      mail-network:
+        ipv4_address: 10.89.6.13
+    environment:
+      RC_DB_USER: ${RC_DB_USER}
+      RC_DB_HOST: 10.89.6.10
+      RC_DB_PASS: ${RC_DB_PASS}
+      RC_DB_NAME: ${RC_DB_NAME}
+      RC_DES_KEY: ${RC_DES_KEY}
+      RC_IMAP_SERVER_NAME: 10.89.6.11
+      RC_SMTP_SERVER_NAME: 10.89.6.11
+      RC_DEFAULT_DOMAIN: ${RC_DEFAULT_DOMAIN}
+
+networks:
+  mail-network:
+    external: true
