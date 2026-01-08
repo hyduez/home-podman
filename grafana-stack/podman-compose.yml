@@ -22,6 +22,8 @@ services:
       - '--storage.tsdb.path=/prometheus/data'
       - '--storage.tsdb.retention.time=30d'
     restart: unless-stopped
+    extra_hosts:
+      - "host.containers.internal:host-gateway"
 
   loki:
     container_name: loki

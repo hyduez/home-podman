@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  agh:
+    image: adguard/adguardhome:latest
+    container_name: adguard-home
+    restart: unless-stopped
+    cap_add:
+      - NET_BIND_SERVICE
+    security_opt:
+      - label=disable
+    ports:
+      - "0.0.0.0:53:53/tcp"
+      - "0.0.0.0:53:53/udp"
+      - "0.0.0.0:8989:3000/tcp"
+      - "0.0.0.0:8081:80/tcp"
+    volumes:
+      - ./data/work:/opt/adguardhome/work:Z,U
+      - ./data/conf:/opt/adguardhome/conf:Z,U
+    networks:
+      - agh_net
+
+networks:
+  agh_net:
+    driver: bridge
