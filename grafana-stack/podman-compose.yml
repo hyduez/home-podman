@@ -33,7 +33,14 @@ services:
     pid: "host"
     volumes:
       - "/:/host:ro,rslave"
+      - "/sys:/host/sys:ro,rslave"
+      - "/proc:/host/proc:ro,rslave"
+      - "/dev:/host/dev:ro"
     command:
       - '--path.rootfs=/host'
+      - '--path.sysfs=/host/sys'
+      - '--path.procfs=/host/proc'
+      - '--collector.rapl'
+      - '--collector.netdev'
     security_opt:
       - label=disable
