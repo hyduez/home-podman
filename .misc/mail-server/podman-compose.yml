@@ -1,4 +1,5 @@
 version: '3.9'
+
 services:
   database:
     image: mariadb:10.5
@@ -7,15 +8,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     volumes:
-      - ./data/db:/var/lib/mysql:Z,U
-      - ./mariadb/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
-    ports:
-      - "3306:3306"
-      - "25:25"
-      - "143:143"
-      - "465:465"
-      - "587:587"
-      - "993:993"
+      - ./data/db:/var/lib/mysql:Z
+      - ./mariadb/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:Z
     networks:
       mail-network:
         ipv4_address: 10.89.6.10
@@ -27,6 +21,12 @@ services:
     networks:
       mail-network:
         ipv4_address: 10.89.6.11
+    ports:
+      - "25:25"
+      - "143:143"
+      - "465:465"
+      - "587:587"
+      - "993:993"
     environment:
       MYSQL_HOST: 10.89.6.10
       MYSQL_DATABASE: postfix
@@ -42,7 +42,7 @@ services:
       PF_DKIM_SERVICE_NAME: 10.89.6.14
       PF_DKIM_SERVICE_PORT: 8891
     volumes:
-      - ./data/postfix:/var/mail
+      - ./data/postfix:/var/mail:Z
 
   opendkim:
     image: technicalguru/mailserver-opendkim
@@ -59,14 +59,12 @@ services:
       DKIM_SETUP_PASS: ${DKIM_SETUP_PASS}
       DKIM_DOMAIN: ${DKIM_DOMAIN}
     volumes:
-      - ./data/opendkim:/etc/opendkim
+      - ./data/opendkim:/etc/opendkim:Z
 
   postfixadmin:
-    image: technicalguru/mailserver-postfixadmin
+    image: technicalguru/mailserver-postfixadmin:latest
     container_name: mailserver-postfixadmin
     restart: unless-stopped
-    ports:
-      - "8082:80"
     networks:
       mail-network:
         ipv4_address: 10.89.6.12
@@ -86,8 +84,6 @@ services:
     image: technicalguru/mailserver-roundcube
     container_name: mailserver-roundcube
     restart: unless-stopped
-    ports:
-      - "8083:80"
     networks:
       mail-network:
         ipv4_address: 10.89.6.13
