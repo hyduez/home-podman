@@ -1,0 +1,26 @@
+services:
+  ollama:
+    image: docker.io/ollama/ollama:latest
+    container_name: ollama
+    restart: always
+    devices:
+      - "nvidia.com/gpu=all"
+    volumes:
+      - ./data/ollama:/root/.ollama:Z,U
+    ports:
+      - "11434:11434"
+
+  litellm:
+    image: ghcr.io/berriai/litellm:main-latest
+    container_name: litellm
+    restart: always
+    environment:
+      - GEMINI_API_KEY
+      - GROQ_API_KEY
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./litellm_config.yaml:/app/config.yaml:Z
+    command: [ "--config", "/app/config.yaml", "--port", "4000" ]
+    depends_on:
+      - ollama
