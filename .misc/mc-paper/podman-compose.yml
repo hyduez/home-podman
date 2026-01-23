@@ -5,8 +5,8 @@ services:
     stdin_open: true
     environment:
       EULA: "true"
-      TYPE: PAPER
-      MEMORY: 2G
+      TYPE: "PAPER"
+      MEMORY: "2G"
     ports:
       - "25565:25565"
     volumes:

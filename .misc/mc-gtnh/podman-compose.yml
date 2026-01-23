@@ -1,0 +1,26 @@
+services:
+  mc:
+    container_name: mc-gtnh
+    image: itzg/minecraft-server:java8
+    tty: true
+    stdin_open: true
+    ports:
+      - "25565:25565"
+      - "25575:25575"
+    environment:
+      EULA: "TRUE"
+      TYPE: "FORGE"
+      VERSION: "1.7.10"
+      MEMORY: "3G"
+      MAX_PLAYERS: "3"
+      MOTD: "GregtTech New Horizons Modpack"
+      ICON: "https://cdn.discordapp.com/\
+             icons/876339668956893216/e68209c9cb3da8d8c52e269ebe049ace.png?size=1024"
+      OVERRIDE_ICON: "true"
+      # i dont have an acc
+      ONLINE_MODE: "false"
+      USE_AIKAR_FLAGS: "true"
+      RCON_PASSWORD: ${RCON_PASSWORD}
+    volumes:
+      - "./data/mc-server:/data"
+
