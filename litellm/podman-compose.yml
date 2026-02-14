@@ -13,17 +13,17 @@ services:
       litellm-network:
         ipv4_address: 10.89.6.10
 
-  ollama:
-    image: docker.io/ollama/ollama:latest
-    container_name: ollama
-    restart: always
-    devices:
-      - "nvidia.com/gpu=all"
-    volumes:
-      - ./data/ollama:/root/.ollama:Z,U
-    networks:
-      litellm-network:
-        ipv4_address: 10.89.6.11
+  # ollama:
+  #   image: docker.io/ollama/ollama:latest
+  #   container_name: ollama
+  #   restart: always
+  #   devices:
+  #     - "nvidia.com/gpu=all"
+  #   volumes:
+  #     - ./data/ollama:/root/.ollama:Z,U
+  #   networks:
+  #     litellm-network:
+  #       ipv4_address: 10.89.6.11
 
   litellm:
     image: ghcr.io/berriai/litellm:main-latest
@@ -42,7 +42,7 @@ services:
       - ./litellm_config.yaml:/app/config.yaml:Z
     command: [ "--config", "/app/config.yaml", "--port", "4000" ]
     depends_on:
-      - ollama
+      # - ollama
       - database
     networks:
       litellm-network:

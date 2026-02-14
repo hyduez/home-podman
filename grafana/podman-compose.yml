@@ -35,22 +35,19 @@ services:
     container_name: node-exporter
     restart: always
     pid: host
+    network_mode: host
     volumes:
       - "/:/host:ro,rslave"
       - "/sys:/host/sys:ro,rslave"
       - "/proc:/host/proc:ro,rslave"
-      - "/dev:/host/dev:ro"
+      - "/dev:/host/dev:ro,rslave"
+      - "/run/udev:/run/udev:ro"
     command:
       - '--path.rootfs=/host'
       - '--path.sysfs=/host/sys'
       - '--path.procfs=/host/proc'
-      - '--collector.rapl'
-      - '--collector.netdev'
     security_opt:
       - label=disable
-    networks:
-      grafana-network:
-        ipv4_address: 10.86.6.12
 
 networks:
   grafana-network:
