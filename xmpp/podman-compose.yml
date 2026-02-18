@@ -1,0 +1,37 @@
+services:
+  ejabberd:
+    container_name: ejabberd
+    # image: ghcr.io/processone/ejabberd
+    build: .
+    ports:
+      - 5222:5222
+      - 5269:5269
+      - 5280:5280
+      - 5443:5443
+    restart: unless-stopped
+    volumes:
+      - ./data/ejabberd:/opt/ejabberd:Z,U
+      - /home/misc/.acme.sh/dousec.org_ecc:/etc/certs/dousec.org:Z,U
+    depends_on:
+      - postgres
+    networks:
+      xmpp-network:
+        ipv4_address: 10.62.6.11
+  
+  postgres:
+    container_name: xmpp-database
+    image: docker.io/library/postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/MAJOR/docker:Z,U
+    networks:
+      xmpp-network:
+        ipv4_address: 10.62.6.10
+
+networks:
+  xmpp-network:
+    external: true

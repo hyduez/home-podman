@@ -23,6 +23,7 @@ services:
 
   nextcloud:
     image: docker.io/library/nextcloud
+    # build: .
     container_name: nextcloud
     restart: always
     depends_on:
@@ -44,10 +45,6 @@ services:
     networks:
       nextcloud-network:
         ipv4_address: 10.83.6.12
-
-volumes:
-  nextcloud:
-  database:
 
 networks:
   nextcloud-network:

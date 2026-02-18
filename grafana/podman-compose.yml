@@ -7,7 +7,7 @@ services:
     volumes:
       - ./data/grafana:/var/lib/grafana:Z,U
     restart: unless-stopped
-    dependes_on:
+    depends_on:
       - prometheus
     networks:
       grafana-network:

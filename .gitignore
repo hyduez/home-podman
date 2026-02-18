@@ -5,4 +5,6 @@ www/
 *.log
 .env
 
+chisel/podman-compose.yml
+
 Caddyfile
