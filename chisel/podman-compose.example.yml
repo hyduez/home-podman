@@ -1,8 +1,0 @@
-services:
-  chisel:
-    image: docker.io/jpillora/chisel
-    container_name: chisel
-    network_mode: host
-    command: >
-      client --auth user:pass ip:port
-      R:0.0.0.0:3000:127.0.0.1:3000

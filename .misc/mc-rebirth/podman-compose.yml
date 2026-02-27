@@ -1,0 +1,21 @@
+services:
+  mc:
+    image: docker.io/itzg/minecraft-server
+    container_name: mc-rebirth
+    tty: true
+    stdin_open: true
+    environment:
+      EULA: true
+      TYPE: CUSTOM
+      MEMORY: 2G
+      VERSION: b1.7.3
+      CUSTOM_SERVER: /var/misc/poseidon.jar
+    ports:
+      - 25565:25565
+      - 25575:25575
+    volumes:
+      - ./data/mc:/data
+      - ./data/misc:/var/misc
+    restart: unless-stopped
+volumes:
+  mc-data: {}
